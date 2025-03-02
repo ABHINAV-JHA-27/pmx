@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/ABHINAV-JHA-27/pmx/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -15,23 +17,103 @@ var listCmd = &cobra.Command{
 		_id := cmd.Flag("id").Value.String()
 		_status := cmd.Flag("status").Value.String()
 		_pid := cmd.Flag("pid").Value.String()
+		pidInt, err := strconv.Atoi(_pid)
+		if err != nil {
+			fmt.Println("Invalid PID")
+			return
+		}
 
 		if _name != "" {
-			fmt.Printf("Name: %s\n", _name)
+			processes := manager.GetProcesses()
+			print_proc := make([]pkg.Process, 0)
+			for _, p := range processes {
+				if p.Name == _name {
+					print_proc = append(print_proc, pkg.Process{
+						ID:          p.ID,
+						Pid:         p.Pid,
+						Name:        p.Name,
+						Status:      p.Status,
+						CPUUsage:    p.CPUUsage,
+						MemoryUsage: p.MemoryUsage,
+						Uptime:      p.Uptime,
+					})
+				}
+			}
+
+			pkg.PrintProcess(print_proc)
+			return
 		}
 		if _id != "" {
-			fmt.Printf("ID: %s\n", _id)
+			processes := manager.GetProcess(_id)
+			print_proc := pkg.Process{
+				ID:          processes.ID,
+				Pid:         processes.Pid,
+				Name:        processes.Name,
+				Status:      processes.Status,
+				CPUUsage:    processes.CPUUsage,
+				MemoryUsage: processes.MemoryUsage,
+				Uptime:      processes.Uptime,
+			}
+
+			pkg.PrintProcess([]pkg.Process{print_proc})
+			return
 		}
 		if _status != "" {
-			fmt.Printf("Status: %s\n", _status)
+			processes := manager.GetProcesses()
+			print_proc := make([]pkg.Process, 0)
+			for _, p := range processes {
+				if p.Status == _status {
+					print_proc = append(print_proc, pkg.Process{
+						ID:          p.ID,
+						Pid:         p.Pid,
+						Name:        p.Name,
+						Status:      p.Status,
+						CPUUsage:    p.CPUUsage,
+						MemoryUsage: p.MemoryUsage,
+						Uptime:      p.Uptime,
+					})
+				}
+			}
+
+			pkg.PrintProcess(print_proc)
+			return
 		}
 		if _pid != "" {
-			fmt.Printf("PID: %s\n", _pid)
+			processes := manager.GetProcesses()
+			print_proc := make([]pkg.Process, 0)
+			for _, p := range processes {
+				if p.Pid == pidInt {
+					print_proc = append(print_proc, pkg.Process{
+						ID:          p.ID,
+						Pid:         p.Pid,
+						Name:        p.Name,
+						Status:      p.Status,
+						CPUUsage:    p.CPUUsage,
+						MemoryUsage: p.MemoryUsage,
+						Uptime:      p.Uptime,
+					})
+				}
+			}
+
+			pkg.PrintProcess(print_proc)
+			return
 		}
 
-		if _name == "" && _id == "" && _status == "" && _pid == "" {
-			fmt.Println("All processes")
+		processes := manager.GetProcesses()
+		print_proc := make([]pkg.Process, 0)
+		for _, p := range processes {
+			print_proc = append(print_proc, pkg.Process{
+				ID:          p.ID,
+				Pid:         p.Pid,
+				Name:        p.Name,
+				Status:      p.Status,
+				CPUUsage:    p.CPUUsage,
+				MemoryUsage: p.MemoryUsage,
+				Uptime:      p.Uptime,
+			})
 		}
+
+		pkg.PrintProcess(print_proc)
 
 	},
 }
