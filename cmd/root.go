@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/ABHINAV-JHA-27/pmx/internal/logger"
@@ -19,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Short: "pmx is a process manager",
 	Long:  "pmx is a CLI process manager",
 	Run: func(cmd *cobra.Command, args []string) {
-		logger.Log.Println("Welcome to pmx")
+		fmt.Println("Welcome to PMx!")
 		cmd.Help()
 	},
 }
