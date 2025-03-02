@@ -4,6 +4,7 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/ABHINAV-JHA-27/pmx/internal/logger"
 	"github.com/google/uuid"
 )
 
@@ -41,7 +42,7 @@ func NewProcess(name, cmd string, restart bool) *Process {
 func (p *Process) StartProcess(shell, flag string) {
 	proc := exec.Command(shell, flag, p.Cmd)
 	if err := proc.Start(); err != nil {
-		panic(err)
+		logger.Log.Fatalf("Error starting process: %v", err)
 	}
 	p.CmdProcess = proc
 	p.Pid = proc.Process.Pid
@@ -52,7 +53,7 @@ func (p *Process) StartProcess(shell, flag string) {
 func (p *Process) StopProcess() {
 	if p.CmdProcess != nil && p.Status == "running" {
 		if err := p.CmdProcess.Process.Kill(); err != nil {
-			panic(err)
+			logger.Log.Fatalf("Error stopping process: %v", err)
 		}
 		p.Status = "stopped"
 		p.Uptime = time.Time{}

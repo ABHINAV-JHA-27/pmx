@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 
+	"github.com/ABHINAV-JHA-27/pmx/internal/logger"
 	"github.com/ABHINAV-JHA-27/pmx/pkg"
 	"github.com/spf13/cobra"
 )
@@ -76,7 +76,7 @@ var listCmd = &cobra.Command{
 		if _pid != "" {
 			pidInt, err := strconv.Atoi(_pid)
 			if err != nil {
-				fmt.Println("Invalid PID")
+				logger.Log.Errorf("Error converting pid to int: %v", err)
 				return
 			}
 			processes := manager.GetProcesses()

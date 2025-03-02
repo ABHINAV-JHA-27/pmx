@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/ABHINAV-JHA-27/pmx/internal/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -15,21 +14,21 @@ var stopCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		_name := cmd.Flag("name").Value.String()
 		if len(args) == 0 && _name == "" {
-			fmt.Println("Please provide an ID or name.")
+			logger.Log.Error("Please provide a process ID or name")
 			cmd.Help()
 			return
 		}
 		_ID := args[0]
 		if _ID != "" {
 			manager.StopProcess(_ID)
-			fmt.Println("Process stopped with ID: ", _ID)
+			logger.Log.Println("Process stopped with ID: ", _ID)
 			return
 		}
 		if _name != "" {
 			for _, p := range manager.GetProcesses() {
 				if p.Name == _name {
 					manager.StopProcess(p.ID)
-					fmt.Println("Process stopped with ID: ", p.ID)
+					logger.Log.Println("Process stopped with name: ", _name)
 					return
 				}
 			}

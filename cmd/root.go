@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/ABHINAV-JHA-27/pmx/internal/logger"
 	"github.com/ABHINAV-JHA-27/pmx/internal/process"
 	"github.com/spf13/cobra"
 )
@@ -19,13 +19,14 @@ var rootCmd = &cobra.Command{
 	Short: "pmx is a process manager",
 	Long:  "pmx is a CLI process manager",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Welcome to pmx!")
+		logger.Log.Println("Welcome to pmx")
+		cmd.Help()
 	},
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Printf("Error: %v\n", err)
+		logger.Log.Fatalf("Error executing root command: %v", err)
 		os.Exit(1)
 	}
 }
