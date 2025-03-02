@@ -43,7 +43,7 @@ func (m *Manager) GetProcesses() []*Process {
 
 func (m *Manager) StartProcess(name, cmd string, restart bool) {
 	p := NewProcess(name, cmd, restart)
-	p.StartProcess()
+	p.StartProcess(m.Shell, m.Flag)
 	m.AddProcess(p)
 }
 
@@ -57,7 +57,7 @@ func (m *Manager) StopProcess(id string) {
 func (m *Manager) RestartProcess(id string) {
 	p := m.GetProcess(id)
 	if p != nil {
-		p.RestartProcess()
+		p.RestartProcess(m.Shell, m.Flag)
 	}
 }
 

@@ -38,8 +38,8 @@ func NewProcess(name, cmd string, restart bool) *Process {
 	}
 }
 
-func (p *Process) StartProcess() {
-	proc := exec.Command(p.Cmd)
+func (p *Process) StartProcess(shell, flag string) {
+	proc := exec.Command(shell, flag, p.Cmd)
 	if err := proc.Start(); err != nil {
 		panic(err)
 	}
@@ -59,8 +59,8 @@ func (p *Process) StopProcess() {
 	}
 }
 
-func (p *Process) RestartProcess() {
+func (p *Process) RestartProcess(shell, flag string) {
 	p.StopProcess()
 	time.Sleep(1 * time.Second)
-	p.StartProcess()
+	p.StartProcess(shell, flag)
 }

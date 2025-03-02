@@ -4,8 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ABHINAV-JHA-27/pmx/internal/process"
 	"github.com/spf13/cobra"
 )
+
+var manager *process.Manager
+
+func init() {
+	manager = process.NewManager()
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "pmx",
