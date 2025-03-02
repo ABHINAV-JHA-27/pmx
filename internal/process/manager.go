@@ -1,37 +1,44 @@
 package process
 
+import (
+	"time"
+
+	"github.com/ABHINAV-JHA-27/pmx/pkg"
+)
+
 type Manager struct {
-	Processes []*Process
+	Shell     string
+	Flag      string
+	Processes map[string]*Process
 }
 
 func NewManager() *Manager {
-	return &Manager{}
+	shell, flag := pkg.GetCurrentShell()
+	return &Manager{
+		Shell:     shell,
+		Flag:      flag,
+		Processes: make(map[string]*Process),
+	}
 }
 
 func (m *Manager) AddProcess(p *Process) {
-	m.Processes = append(m.Processes, p)
+	m.Processes[p.ID] = p
 }
 
-func (m *Manager) RemoveProcess(pid int) {
-	for i, p := range m.Processes {
-		if p.Pid == pid {
-			m.Processes = append(m.Processes[:i], m.Processes[i+1:]...)
-			break
-		}
-	}
+func (m *Manager) RemoveProcess(id string) {
+	delete(m.Processes, id)
 }
 
-func (m *Manager) GetProcess(pid int) *Process {
-	for _, p := range m.Processes {
-		if p.Pid == pid {
-			return p
-		}
-	}
-	return nil
+func (m *Manager) GetProcess(id string) *Process {
+	return m.Processes[id]
 }
 
 func (m *Manager) GetProcesses() []*Process {
-	return m.Processes
+	var processes []*Process
+	for _, p := range m.Processes {
+		processes = append(processes, p)
+	}
+	return processes
 }
 
 func (m *Manager) StartProcess(name, cmd string, restart bool) {
@@ -40,40 +47,49 @@ func (m *Manager) StartProcess(name, cmd string, restart bool) {
 	m.AddProcess(p)
 }
 
-func (m *Manager) StopProcess(pid int) {
-	p := m.GetProcess(pid)
+func (m *Manager) StopProcess(id string) {
+	p := m.GetProcess(id)
 	if p != nil {
 		p.StopProcess()
 	}
 }
 
-func (m *Manager) RestartProcess(pid int) {
-	p := m.GetProcess(pid)
+func (m *Manager) RestartProcess(id string) {
+	p := m.GetProcess(id)
 	if p != nil {
 		p.RestartProcess()
 	}
 }
 
-func (m *Manager) GetProcessStatus(pid int) string {
-	p := m.GetProcess(pid)
+func (m *Manager) GetProcessStatus(id string) string {
+	p := m.GetProcess(id)
 	if p != nil {
 		return p.Status
 	}
 	return ""
 }
 
-func (m *Manager) GetProcessCPUUsage(pid int) float64 {
-	p := m.GetProcess(pid)
+func (m *Manager) GetProcessCPUUsage(id string) float64 {
+	p := m.GetProcess(id)
 	if p != nil {
 		return p.CPUUsage
 	}
 	return 0
 }
 
-func (m *Manager) GetProcessMemory(pid int) float64 {
-	p := m.GetProcess(pid)
+func (m *Manager) GetProcessMemory(id string) float64 {
+	p := m.GetProcess(id)
 	if p != nil {
 		return p.MemoryUsage
 	}
 	return 0
+}
+
+func (m *Manager) GetProcessUptime(id string) string {
+	currentTime := time.Now()
+	p := m.GetProcess(id)
+	if p != nil {
+		return currentTime.Sub(p.Uptime).String()
+	}
+	return ""
 }
