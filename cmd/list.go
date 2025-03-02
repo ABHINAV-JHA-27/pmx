@@ -17,11 +17,6 @@ var listCmd = &cobra.Command{
 		_id := cmd.Flag("id").Value.String()
 		_status := cmd.Flag("status").Value.String()
 		_pid := cmd.Flag("pid").Value.String()
-		pidInt, err := strconv.Atoi(_pid)
-		if err != nil {
-			fmt.Println("Invalid PID")
-			return
-		}
 
 		if _name != "" {
 			processes := manager.GetProcesses()
@@ -79,6 +74,11 @@ var listCmd = &cobra.Command{
 			return
 		}
 		if _pid != "" {
+			pidInt, err := strconv.Atoi(_pid)
+			if err != nil {
+				fmt.Println("Invalid PID")
+				return
+			}
 			processes := manager.GetProcesses()
 			print_proc := make([]pkg.Process, 0)
 			for _, p := range processes {
